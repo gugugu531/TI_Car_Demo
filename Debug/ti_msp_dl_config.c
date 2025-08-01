@@ -56,9 +56,11 @@ SYSCONFIG_WEAK void SYSCFG_DL_init(void)
     SYSCFG_DL_MOTOR_PWM_init();
     SYSCFG_DL_ENCODER_QEI_init();
     SYSCFG_DL_I2C_MPU6050_init();
+    SYSCFG_DL_K230_UART_init();
     /* Ensure backup structures have no valid state */
 	gMOTOR_PWMBackup.backupRdy 	= false;
 	gENCODER_QEIBackup.backupRdy 	= false;
+
 
 }
 /*
@@ -93,12 +95,14 @@ SYSCONFIG_WEAK void SYSCFG_DL_initPower(void)
     DL_TimerA_reset(MOTOR_PWM_INST);
     DL_TimerG_reset(ENCODER_QEI_INST);
     DL_I2C_reset(I2C_MPU6050_INST);
+    DL_UART_Main_reset(K230_UART_INST);
 
     DL_GPIO_enablePower(GPIOA);
     DL_GPIO_enablePower(GPIOB);
     DL_TimerA_enablePower(MOTOR_PWM_INST);
     DL_TimerG_enablePower(ENCODER_QEI_INST);
     DL_I2C_enablePower(I2C_MPU6050_INST);
+    DL_UART_Main_enablePower(K230_UART_INST);
     delay_cycles(POWER_STARTUP_DELAY);
 }
 
@@ -127,6 +131,11 @@ SYSCONFIG_WEAK void SYSCFG_DL_GPIO_init(void)
         DL_GPIO_WAKEUP_DISABLE);
     DL_GPIO_enableHiZ(GPIO_I2C_MPU6050_IOMUX_SDA);
     DL_GPIO_enableHiZ(GPIO_I2C_MPU6050_IOMUX_SCL);
+
+    DL_GPIO_initPeripheralOutputFunction(
+        GPIO_K230_UART_IOMUX_TX, GPIO_K230_UART_IOMUX_TX_FUNC);
+    DL_GPIO_initPeripheralInputFunction(
+        GPIO_K230_UART_IOMUX_RX, GPIO_K230_UART_IOMUX_RX_FUNC);
 
     DL_GPIO_initDigitalInputFeatures(GPIO_MPU6050_PIN_MPU6050_INT_IOMUX,
 		 DL_GPIO_INVERSION_DISABLE, DL_GPIO_RESISTOR_PULL_UP,
@@ -383,5 +392,37 @@ SYSCONFIG_WEAK void SYSCFG_DL_I2C_MPU6050_init(void) {
     DL_I2C_enableController(I2C_MPU6050_INST);
 
 
+}
+
+static const DL_UART_Main_ClockConfig gK230_UARTClockConfig = {
+    .clockSel    = DL_UART_MAIN_CLOCK_BUSCLK,
+    .divideRatio = DL_UART_MAIN_CLOCK_DIVIDE_RATIO_1
+};
+
+static const DL_UART_Main_Config gK230_UARTConfig = {
+    .mode        = DL_UART_MAIN_MODE_NORMAL,
+    .direction   = DL_UART_MAIN_DIRECTION_TX_RX,
+    .flowControl = DL_UART_MAIN_FLOW_CONTROL_NONE,
+    .parity      = DL_UART_MAIN_PARITY_NONE,
+    .wordLength  = DL_UART_MAIN_WORD_LENGTH_8_BITS,
+    .stopBits    = DL_UART_MAIN_STOP_BITS_ONE
+};
+
+SYSCONFIG_WEAK void SYSCFG_DL_K230_UART_init(void)
+{
+    DL_UART_Main_setClockConfig(K230_UART_INST, (DL_UART_Main_ClockConfig *) &gK230_UARTClockConfig);
+
+    DL_UART_Main_init(K230_UART_INST, (DL_UART_Main_Config *) &gK230_UARTConfig);
+    /*
+     * Configure baud rate by setting oversampling and baud rate divisors.
+     *  Target baud rate: 9600
+     *  Actual baud rate: 9599.81
+     */
+    DL_UART_Main_setOversampling(K230_UART_INST, DL_UART_OVERSAMPLING_RATE_16X);
+    DL_UART_Main_setBaudRateDivisor(K230_UART_INST, K230_UART_IBRD_40_MHZ_9600_BAUD, K230_UART_FBRD_40_MHZ_9600_BAUD);
+
+
+
+    DL_UART_Main_enable(K230_UART_INST);
 }
 

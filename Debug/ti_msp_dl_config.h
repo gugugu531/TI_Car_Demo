@@ -143,6 +143,26 @@ extern "C" {
 #define GPIO_I2C_MPU6050_IOMUX_SCL_FUNC                IOMUX_PINCM15_PF_I2C1_SCL
 
 
+/* Defines for K230_UART */
+#define K230_UART_INST                                                     UART1
+#define K230_UART_INST_FREQUENCY                                        40000000
+#define K230_UART_INST_IRQHandler                               UART1_IRQHandler
+#define K230_UART_INST_INT_IRQN                                   UART1_INT_IRQn
+#define GPIO_K230_UART_RX_PORT                                             GPIOB
+#define GPIO_K230_UART_TX_PORT                                             GPIOB
+#define GPIO_K230_UART_RX_PIN                                      DL_GPIO_PIN_5
+#define GPIO_K230_UART_TX_PIN                                      DL_GPIO_PIN_4
+#define GPIO_K230_UART_IOMUX_RX                                  (IOMUX_PINCM18)
+#define GPIO_K230_UART_IOMUX_TX                                  (IOMUX_PINCM17)
+#define GPIO_K230_UART_IOMUX_RX_FUNC                   IOMUX_PINCM18_PF_UART1_RX
+#define GPIO_K230_UART_IOMUX_TX_FUNC                   IOMUX_PINCM17_PF_UART1_TX
+#define K230_UART_BAUD_RATE                                               (9600)
+#define K230_UART_IBRD_40_MHZ_9600_BAUD                                    (260)
+#define K230_UART_FBRD_40_MHZ_9600_BAUD                                     (27)
+
+
+
+
 
 /* Port definition for Pin Group GPIO_MPU6050 */
 #define GPIO_MPU6050_PORT                                                (GPIOB)
@@ -264,6 +284,7 @@ void SYSCFG_DL_SYSCTL_init(void);
 void SYSCFG_DL_MOTOR_PWM_init(void);
 void SYSCFG_DL_ENCODER_QEI_init(void);
 void SYSCFG_DL_I2C_MPU6050_init(void);
+void SYSCFG_DL_K230_UART_init(void);
 
 
 bool SYSCFG_DL_saveConfiguration(void);

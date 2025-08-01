@@ -4,7 +4,7 @@
 #include <main.h>
 #define PWM_Period 10000
 
-void Set_PWM(float PWMB_in, float PWMA_in);//设置两轮速度
+void Set_PWM(float PWML_in, float PWMR_in);//设置两轮速度
 void TB6612_Init();//// 初始化TB6612相关模组
 void reset_encoder();
 

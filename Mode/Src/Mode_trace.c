@@ -17,7 +17,7 @@ int trace(float speed)
 	while (1) // 可在此添加跳出条件
 	{
 		transform = PID_Compute(&TracePID, get_Terror());
-		Set_PWM(speed - transform, speed + transform);
+		Set_PWM(speed + transform, speed - transform);
 		HAL_Delay(5);
 	}
 	stop();
@@ -55,7 +55,7 @@ void trace_to_cross(float speed)
 			}
 		}
 		transform = PID_Compute(&TracePID, get_Terror());
-		Set_PWM(speed - transform, speed + transform);
+		Set_PWM(speed + transform, speed - transform);
 		HAL_Delay(5);
 	}
 	return;

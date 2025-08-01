@@ -199,8 +199,7 @@ EXE_OUTPUTS__QUOTED += \
 
 
 # All Target
-all: $(OBJS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "car_demo.out"
+all: car_demo.out
 
 # Tool invocations
 car_demo.out: $(OBJS) $(GEN_CMDS)

@@ -25,6 +25,8 @@ const PWM1          = PWM.addInstance();
 const QEI           = scripting.addModule("/ti/driverlib/QEI", {}, false);
 const QEI1          = QEI.addInstance();
 const SYSCTL        = scripting.addModule("/ti/driverlib/SYSCTL");
+const UART          = scripting.addModule("/ti/driverlib/UART", {}, false);
+const UART1         = UART.addInstance();
 const ProjectConfig = scripting.addModule("/ti/project_config/ProjectConfig");
 
 /**
@@ -220,6 +222,20 @@ QEI1.ccp1PinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric12";
 SYSCTL.clockTreeEn           = true;
 SYSCTL.forceDefaultClkConfig = true;
 scripting.suppress("For best practices when the CPUCLK is running at 32MHz and above, clear the flash status bit using DL_FlashCTL_executeClearStatus\\(\\) before executing any flash operation\\. Otherwise there may be false positives\\.", SYSCTL);
+
+UART1.$name                            = "K230_UART";
+UART1.peripheral.$assign               = "UART1";
+UART1.peripheral.rxPin.$assign         = "PB5";
+UART1.peripheral.txPin.$assign         = "PB4";
+UART1.txPinConfig.direction            = scripting.forceWrite("OUTPUT");
+UART1.txPinConfig.hideOutputInversion  = scripting.forceWrite(false);
+UART1.txPinConfig.onlyInternalResistor = scripting.forceWrite(false);
+UART1.txPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
+UART1.txPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric4";
+UART1.rxPinConfig.hideOutputInversion  = scripting.forceWrite(false);
+UART1.rxPinConfig.onlyInternalResistor = scripting.forceWrite(false);
+UART1.rxPinConfig.passedPeripheralType = scripting.forceWrite("Digital");
+UART1.rxPinConfig.$name                = "ti_driverlib_gpio_GPIOPinGeneric5";
 
 ProjectConfig.genLibDL = false;
 scripting.suppress("Driverlib inclusion is required for most use cases\\. Disable with caution\\.", ProjectConfig, "genLibDL");
